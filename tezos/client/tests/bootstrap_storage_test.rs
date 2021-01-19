@@ -87,6 +87,8 @@ fn test_bootstrap_empty_storage_with_first_three_blocks() {
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
     assert_eq!(
@@ -109,6 +111,8 @@ fn test_bootstrap_empty_storage_with_first_three_blocks() {
             test_data::block_header_level2_operations(),
         )),
         max_operations_ttl: apply_block_result.max_operations_ttl,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
     assert_eq!(
@@ -131,6 +135,8 @@ fn test_bootstrap_empty_storage_with_first_three_blocks() {
             test_data::block_header_level3_operations(),
         )),
         max_operations_ttl: apply_block_result.max_operations_ttl,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
     assert_eq!(
@@ -162,6 +168,8 @@ fn test_bootstrap_empty_storage_with_first_block_twice() {
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     let apply_block_result_1 = apply_block_result_1.unwrap();
     assert_eq!(
@@ -182,6 +190,8 @@ fn test_bootstrap_empty_storage_with_first_block_twice() {
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     let apply_block_result_2 = apply_block_result_2.unwrap();
     assert_eq!(
@@ -233,6 +243,8 @@ fn test_bootstrap_empty_storage_with_first_two_blocks_and_check_result_json_meta
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
 
@@ -267,6 +279,8 @@ fn test_bootstrap_empty_storage_with_first_two_blocks_and_check_result_json_meta
             test_data::block_header_level2_operations(),
         )),
         max_operations_ttl: 1,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
 
@@ -308,6 +322,8 @@ fn test_bootstrap_empty_storage_with_first_two_blocks_and_check_result_json_meta
             test_data::block_header_level2_operations(),
         )),
         max_operations_ttl: 1,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
 
@@ -349,6 +365,8 @@ fn test_bootstrap_empty_storage_with_first_two_blocks_and_check_result_json_meta
             test_data::block_header_level3_operations(),
         )),
         max_operations_ttl: 2,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
     assert_eq!(
@@ -404,6 +422,8 @@ fn test_bootstrap_empty_storage_with_second_block_with_first_predecessor_should_
             test_data::block_header_level2_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     assert!(apply_block_result.is_err());
     assert!(match apply_block_result.unwrap_err() {
@@ -438,6 +458,8 @@ fn test_bootstrap_empty_storage_with_third_block_with_first_predecessor_should_f
             test_data::block_header_level3_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     assert!(apply_block_result.is_err());
     assert!(match apply_block_result.unwrap_err() {
@@ -468,6 +490,8 @@ fn test_bootstrap_empty_storage_with_second_block_should_fail_incomplete_operati
         pred_header: genesis_block_header,
         operations: vec![vec![]],
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     assert!(apply_block_result.is_err());
     assert_eq!(
@@ -502,6 +526,8 @@ fn test_bootstrap_empty_storage_with_first_block_with_invalid_operations_should_
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     assert!(apply_block_result.is_ok());
 
@@ -519,6 +545,8 @@ fn test_bootstrap_empty_storage_with_first_block_with_invalid_operations_should_
             test_data::block_header_level3_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     assert!(apply_block_result.is_err());
 }
@@ -567,6 +595,8 @@ fn test_begin_application_on_empty_storage_with_first_blocks() {
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     });
     assert!(apply_block_result.is_ok());
 

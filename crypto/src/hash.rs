@@ -6,9 +6,12 @@ use crate::base58::{FromBase58Check, FromBase58CheckError, ToBase58Check};
 mod prefix_bytes {
     pub const CHAIN_ID: [u8; 3] = [87, 82, 0];
     pub const BLOCK_HASH: [u8; 2] = [1, 52];
+    pub const BLOCK_METADATA_HASH: [u8; 2] = [234, 249];
     pub const CONTEXT_HASH: [u8; 2] = [79, 199];
     pub const OPERATION_HASH: [u8; 2] = [5, 116];
     pub const OPERATION_LIST_LIST_HASH: [u8; 3] = [29, 159, 109];
+    pub const OPERATION_METADATA_HASH: [u8; 2] = [005, 183];
+    pub const OPERATION_METADATA_LIST_LIST_HASH: [u8; 3] = [29, 159, 182];
     pub const PROTOCOL_HASH: [u8; 2] = [2, 170];
     pub const CRYPTOBOX_PUBLIC_KEY_HASH: [u8; 2] = [153, 103];
     pub const CONTRACT_KT1_HASH: [u8; 3] = [2, 90, 121];
@@ -23,8 +26,11 @@ mod prefix_bytes {
 pub type Hash = Vec<u8>;
 pub type ChainId = Hash;
 pub type BlockHash = Hash;
+pub type BlockMetadataHash = Hash;
 pub type OperationHash = Hash;
 pub type OperationListListHash = Hash;
+pub type OperationMetadataHash = Hash;
+pub type OperationMetadataListListHash = Hash;
 pub type ContextHash = Hash;
 pub type ProtocolHash = Hash;
 pub type ContractTz1Hash = Hash;
@@ -35,36 +41,43 @@ pub type PublicKeyEd25519 = Hash;
 pub type PublicKeySecp256k1 = Hash;
 pub type PublicKeyP256 = Hash;
 
+/// Note: see Tezos ocaml lib_crypto/base58.ml
 #[derive(Debug, Copy, Clone)]
 pub enum HashType {
-    ChainId,
     // "\087\082\000" (* Net(15) *)
-    BlockHash,
+    ChainId,
     // "\001\052" (* B(51) *)
-    ProtocolHash,
+    BlockHash,
+    // "\234\249" (* bm(52) *)
+    BlockMetadataHash,
     // "\002\170" (* P(51) *)
-    ContextHash,
+    ProtocolHash,
     // "\079\199" (* Co(52) *)
-    OperationHash,
+    ContextHash,
     // "\005\116" (* o(51) *)
-    OperationListListHash,
+    OperationHash,
     // "\029\159\109" (* LLo(53) *)
-    CryptoboxPublicKeyHash,
+    OperationListListHash,
+    // "\005\183" (* r(51) *)
+    OperationMetadataHash,
+    // "\029\159\182" (* LLr(53) *)
+    OperationMetadataListListHash,
     // "\153\103" (* id(30) *)
-    ContractKt1Hash,
+    CryptoboxPublicKeyHash,
     // "\002\090\121" (* KT1(36) *)
-    ContractTz1Hash,
+    ContractKt1Hash,
     // "\006\161\159" (* tz1(36) *)
-    ContractTz2Hash,
+    ContractTz1Hash,
     // "\006\161\161" (* tz2(36) *)
-    ContractTz3Hash,
+    ContractTz2Hash,
     // "\006\161\164" (* tz3(36) *)
-    PublicKeyEd25519,
+    ContractTz3Hash,
     // "\013\015\037\217" (* edpk(54) *)
-    PublicKeySecp256k1,
+    PublicKeyEd25519,
     // "\003\254\226\086" (* sppk(55) *)
-    PublicKeyP256,
+    PublicKeySecp256k1,
     // "\003\178\139\127" (* p2pk(55) *)
+    PublicKeyP256,
 }
 
 impl HashType {
@@ -74,10 +87,13 @@ impl HashType {
         match self {
             HashType::ChainId => &CHAIN_ID,
             HashType::BlockHash => &BLOCK_HASH,
+            HashType::BlockMetadataHash => &BLOCK_METADATA_HASH,
             HashType::ContextHash => &CONTEXT_HASH,
             HashType::ProtocolHash => &PROTOCOL_HASH,
             HashType::OperationHash => &OPERATION_HASH,
             HashType::OperationListListHash => &OPERATION_LIST_LIST_HASH,
+            HashType::OperationMetadataHash => &OPERATION_METADATA_HASH,
+            HashType::OperationMetadataListListHash => &OPERATION_METADATA_LIST_LIST_HASH,
             HashType::CryptoboxPublicKeyHash => &CRYPTOBOX_PUBLIC_KEY_HASH,
             HashType::ContractKt1Hash => &CONTRACT_KT1_HASH,
             HashType::ContractTz1Hash => &CONTRACT_TZ1_HASH,
@@ -94,10 +110,13 @@ impl HashType {
         match self {
             HashType::ChainId => 4,
             HashType::BlockHash
+            | HashType::BlockMetadataHash
             | HashType::ContextHash
             | HashType::ProtocolHash
             | HashType::OperationHash
             | HashType::OperationListListHash
+            | HashType::OperationMetadataHash
+            | HashType::OperationMetadataListListHash
             | HashType::PublicKeyEd25519 => 32,
             HashType::CryptoboxPublicKeyHash => 16,
             HashType::ContractKt1Hash

@@ -237,6 +237,8 @@ pub fn store_applied_block_result(
     let block_additional_data = BlockAdditionalDataBuilder::default()
         .max_operations_ttl(block_result.max_operations_ttl.try_into().unwrap())
         .last_allowed_fork_level(block_result.last_allowed_fork_level)
+        .block_metadata_hash(block_result.block_metadata_hash)
+        .ops_metadata_hash(block_result.ops_metadata_hash)
         .build()
         .unwrap();
     block_storage.put_block_additional_data(&block_hash, block_additional_data.clone())?;
@@ -341,6 +343,8 @@ pub fn initialize_storage_with_genesis_block(
     let block_additional_data = BlockAdditionalDataBuilder::default()
         .max_operations_ttl(genesis_additional_data.max_operations_ttl)
         .last_allowed_fork_level(genesis_additional_data.last_allowed_fork_level)
+        .block_metadata_hash(None)
+        .ops_metadata_hash(None)
         .build()
         .unwrap();
     block_storage.put_block_additional_data(&genesis_with_hash.hash, block_additional_data)?;

@@ -18,7 +18,7 @@
 #   1. download it from xtz-shots.io, e.g.: `wget https://delphinet.xtz-shots.io/tezos-delphinet-173873.full`
 #   2. or run node and create snapshot manually to desired level (recomended, you can set set level high):
 #     ./tezos-node config init --network edonet --data-dir /tmp/chain-data
-#     ./tezos-node run --network edonet --data-dir /tmp/chain-data --net-addr 0.0.0.0:9734 --rpc-addr 'localhost:18888' --history-mode archive
+#     ./tezos-node run --network edonet --data-dir /tmp/chain-data --net-addr 0.0.0.0:9734 --rpc-addr 0.0.0.0:18888 --history-mode archive
 #     ./tezos-node snapshot export --block BM3qBTWs515g6Vforkns8o3AC4H57f3WdrKQSARwe4jbJoe2kEn edo.20000.full --data-dir /tmp/chain-data/
 #
 # - import snapshot:

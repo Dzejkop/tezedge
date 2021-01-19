@@ -427,6 +427,8 @@ fn apply_blocks_1(chain_id: &ChainId, genesis_block_header: BlockHeader) -> Bloc
             test_data::block_header_level1_operations(),
         )),
         max_operations_ttl: 0,
+        predecessor_block_metadata_hash: None,
+        predecessor_ops_metadata_hash: None,
     })
     .unwrap();
     assert_eq!(

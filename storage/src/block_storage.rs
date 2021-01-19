@@ -7,7 +7,7 @@ use derive_builder::Builder;
 use getset::{CopyGetters, Getters};
 use serde::{Deserialize, Serialize};
 
-use crypto::hash::{BlockHash, ContextHash};
+use crypto::hash::{BlockHash, BlockMetadataHash, ContextHash, OperationMetadataListListHash};
 
 use crate::persistent::{
     BincodeEncoded, CommitLogSchema, CommitLogWithSchema, KeyValueSchema, KeyValueStoreWithSchema,
@@ -40,12 +40,16 @@ pub struct BlockJsonData {
     operations_proto_metadata_json: String,
 }
 
-#[derive(Clone, Builder, CopyGetters, Serialize, Deserialize, Debug)]
+#[derive(Clone, Builder, CopyGetters, Getters, Serialize, Deserialize, Debug)]
 pub struct BlockAdditionalData {
     #[get_copy = "pub"]
     max_operations_ttl: u16,
     #[get_copy = "pub"]
     last_allowed_fork_level: i32,
+    #[get = "pub"]
+    block_metadata_hash: Option<BlockMetadataHash>,
+    #[get = "pub"]
+    ops_metadata_hash: Option<OperationMetadataListListHash>,
 }
 
 pub trait BlockStorageReader: Sync + Send {
