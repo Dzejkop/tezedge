@@ -38,10 +38,10 @@ static ACTOR_ID_GENERATOR: AtomicU64 = AtomicU64::new(0);
 
 #[derive(Debug, Fail)]
 pub enum PeerError {
-    #[fail(display = "Unsupported protocol - supported: {} vs. peer's: {}", supported_version, incompatible_versions)]
+    #[fail(display = "Unsupported protocol - shell: ({}) is not compatible with peer: ({})", supported_version, incompatible_version)]
     UnsupportedProtocol {
         supported_version: String,
-        incompatible_versions: String,
+        incompatible_version: String,
     },
     #[fail(display = "Received NACK from remote peer")]
     NackReceived,
@@ -437,8 +437,14 @@ pub async fn bootstrap(
 
             return Err(
                 PeerError::UnsupportedProtocol {
-                    supported_version: format!("{:?}", &supported_protocol_version),
-                    incompatible_versions: format!("{:?}", &connection_message.version()),
+                    supported_version: format!(
+                        "{}/distributed_db_versions {:?}/p2p_versions {:?}",
+                        supported_protocol_version.version.chain_name(), supported_protocol_version.distributed_db_versions, supported_protocol_version.p2p_versions
+                    ),
+                    incompatible_version: format!(
+                        "{}/distributed_db_version {}/p2p_version {}",
+                        connection_message.version().chain_name(), connection_message.version().distributed_db_version(), connection_message.version().p2p_version()
+                    ),
                 }
             );
         }

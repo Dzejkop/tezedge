@@ -1394,7 +1394,7 @@ steps:
 # just run ocaml 3 carthagenet snapshoted nodes
 - name: ocaml-node-run-1
   user: root
-  image: tezos/tezos:v8.1
+  image: tezos/tezos:v8.0
   detach: true
   volumes:
     - name: build
@@ -1410,7 +1410,7 @@ steps:
 
 - name: ocaml-node-run-2
   user: root
-  image: tezos/tezos:v8.1
+  image: tezos/tezos:v8.0
   detach: true
   volumes:
     - name: build
@@ -1426,7 +1426,7 @@ steps:
 
 - name: ocaml-node-run-3
   user: root
-  image: tezos/tezos:v8.1
+  image: tezos/tezos:v8.0
   detach: true
   volumes:
     - name: build
