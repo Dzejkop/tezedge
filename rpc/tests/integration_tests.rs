@@ -133,11 +133,6 @@ async fn integration_tests_rpc(from_block: i64, to_block: i64) {
         .await;
         test_rpc_compare_json(&format!(
             "{}/{}/{}",
-            "chains/main/blocks", level, "votes/listings"
-        ))
-        .await;
-        test_rpc_compare_json(&format!(
-            "{}/{}/{}",
             "chains/main/blocks", level, "helpers/current_level"
         ))
         .await;
@@ -146,6 +141,11 @@ async fn integration_tests_rpc(from_block: i64, to_block: i64) {
             "chains/main/blocks", level, "minimal_valid_time"
         ))
         .await;
+        // test_rpc_compare_json(&format!(
+        //     "{}/{}/{}",
+        //     "chains/main/blocks", level, "votes/listings"
+        // ))
+        //     .await;
         // --------------------------------- End of tests --------------------------------
 
         // we need some constants
