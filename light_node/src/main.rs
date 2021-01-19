@@ -144,7 +144,6 @@ fn create_tezos_readonly_api_pool(
         ProtocolEndpointConfiguration::new(
             TezosRuntimeConfiguration {
                 log_enabled: env.logging.ocaml_log_enabled,
-                no_of_ffi_calls_treshold_for_gc: env.ffi.no_of_ffi_calls_threshold_for_gc,
                 debug_mode: false,
             },
             tezos_env,
@@ -173,7 +172,6 @@ fn create_tezos_without_context_api_pool(
         ProtocolEndpointConfiguration::new(
             TezosRuntimeConfiguration {
                 log_enabled: env.logging.ocaml_log_enabled,
-                no_of_ffi_calls_treshold_for_gc: env.ffi.no_of_ffi_calls_threshold_for_gc,
                 debug_mode: false,
             },
             tezos_env,
@@ -208,7 +206,6 @@ fn create_tezos_writeable_api_pool(
         ProtocolEndpointConfiguration::new(
             TezosRuntimeConfiguration {
                 log_enabled: env.logging.ocaml_log_enabled,
-                no_of_ffi_calls_treshold_for_gc: env.ffi.no_of_ffi_calls_threshold_for_gc,
                 debug_mode: env.storage.store_context_actions,
             },
             tezos_env,
@@ -272,7 +269,6 @@ fn block_on_actors(
         ProtocolEndpointConfiguration::new(
             TezosRuntimeConfiguration {
                 log_enabled: env.logging.ocaml_log_enabled,
-                no_of_ffi_calls_treshold_for_gc: env.ffi.no_of_ffi_calls_threshold_for_gc,
                 debug_mode: env.storage.store_context_actions,
             },
             tezos_env.clone(),

@@ -2473,7 +2473,6 @@ pub mod tests {
             ProtocolEndpointConfiguration::new(
                 TezosRuntimeConfiguration {
                     log_enabled: false,
-                    no_of_ffi_calls_treshold_for_gc: 0,
                     debug_mode: false,
                 },
                 tezos_env.clone(),
