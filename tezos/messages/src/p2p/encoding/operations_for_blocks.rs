@@ -208,3 +208,90 @@ has_encoding!(
         )])
     }
 );
+
+pub mod parse {
+    use super::*;
+    use nom::{bytes::complete::tag, combinator, error::Error, IResult};
+
+    impl OperationsForBlock {
+        pub fn parse(input: &[u8]) -> IResult<&[u8], Self> {
+            let (rem, hash) = HashType::BlockHash.parse(input)?;
+            let (rem, validation_pass) = nom::number::complete::i8(rem)?;
+
+            Ok((
+                rem,
+                OperationsForBlock {
+                    hash,
+                    validation_pass,
+                    body: Default::default(),
+                },
+            ))
+        }
+    }
+
+    impl OperationsForBlocksMessage {
+        pub fn parse(input: &[u8]) -> IResult<&[u8], Self> {
+            let (input, operations_for_block) = OperationsForBlock::parse(input)?;
+            let (input, operation_hashes_path) = Path::parse(input)?;
+
+            let mut it = combinator::iterator(input, Operation::parse);
+            let operations = it.collect::<Vec<_>>();
+            let rem = it.finish()?.0;
+
+            Ok((
+                rem,
+                OperationsForBlocksMessage {
+                    operations_for_block,
+                    operation_hashes_path,
+                    operations,
+                    body: Default::default(),
+                },
+            ))
+        }
+    }
+
+    impl Path {
+        pub fn parse(input: &[u8]) -> IResult<&[u8], Path> {
+            nom::branch::alt((
+                Self::parse_path_left,
+                Self::parse_path_op,
+                Self::parse_path_right,
+            ))(input)
+        }
+
+        pub fn parse_path_right(input: &[u8]) -> IResult<&[u8], Path, Error<&[u8]>> {
+            let (input, _) = tag(&[0x0F])(input)?;
+            let (input, left) = HashType::OperationListListHash.parse(input)?;
+            let (input, path) = Self::parse(input)?;
+
+            Ok((
+                input,
+                Path::Right(Box::new(PathRight {
+                    left,
+                    path,
+                    body: BinaryDataCache::default(),
+                })),
+            ))
+        }
+
+        pub fn parse_path_left(input: &[u8]) -> IResult<&[u8], Path> {
+            let (input, _) = tag(&[0xF0])(input)?;
+            let (input, path) = Self::parse(input)?;
+            let (input, right) = HashType::OperationListListHash.parse(input)?;
+
+            Ok((
+                input,
+                Path::Left(Box::new(PathLeft {
+                    right,
+                    path,
+                    body: BinaryDataCache::default(),
+                })),
+            ))
+        }
+
+        pub fn parse_path_op(input: &[u8]) -> IResult<&[u8], Path> {
+            let (input, _) = tag(&[0x00])(input)?;
+            Ok((input, Path::Op))
+        }
+    }
+}

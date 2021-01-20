@@ -159,3 +159,51 @@ into_peer_message!(GetOperationsForBlocksMessage, GetOperationsForBlocks);
 into_peer_message!(OperationsForBlocksMessage, OperationsForBlocks);
 into_peer_message!(GetOperationsMessage, GetOperations);
 into_peer_message!(OperationMessage, Operation);
+
+pub mod parse {
+    use super::*;
+    use nom::{bytes::complete, combinator, number::Endianness, IResult};
+
+    impl PeerMessage {
+        pub fn parse(input: &[u8]) -> IResult<&[u8], Self> {
+            let (input, tag) = nom::number::complete::u16(Endianness::Big)(input)?;
+            match tag {
+                0x61 => {
+                    let (input, operations_for_blocks_message) =
+                        OperationsForBlocksMessage::parse(input)?;
+
+                    Ok((
+                        input,
+                        PeerMessage::OperationsForBlocks(operations_for_blocks_message),
+                    ))
+                }
+                _ => panic!(
+                    "Should support different tags obviously, but I'm only interested in the one"
+                ),
+            }
+        }
+    }
+
+    impl PeerMessageResponse {
+        pub fn parse(input: &[u8]) -> IResult<&[u8], Self> {
+            fn inner(input: &[u8]) -> IResult<&[u8], PeerMessageResponse> {
+                let (input, len) = nom::number::complete::u32(Endianness::Big)(input)?;
+                let (rem, input) = complete::take(len)(input)?;
+
+                let mut it = combinator::iterator(input, PeerMessage::parse);
+                let messages = it.collect::<Vec<_>>();
+                it.finish()?;
+
+                Ok((
+                    rem,
+                    PeerMessageResponse {
+                        messages,
+                        body: Default::default(),
+                    },
+                ))
+            }
+
+            combinator::all_consuming(inner)(input)
+        }
+    }
+}

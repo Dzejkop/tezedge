@@ -140,6 +140,24 @@ impl HashType {
     }
 }
 
+mod parse {
+    use super::*;
+    use nom::{bytes::complete, IResult};
+
+    impl HashType {
+        pub fn parse<'a>(&self, input: &'a [u8]) -> IResult<&'a [u8], Hash> {
+            match self {
+                HashType::BlockHash | HashType::OperationHash | HashType::OperationListListHash => {
+                    let (rem, hash) = complete::take(32usize)(input)?;
+
+                    Ok((rem, Vec::from(hash)))
+                }
+                _ => unimplemented!(),
+            }
+        }
+    }
+}
+
 #[inline]
 pub fn chain_id_to_b58_string(chain_id: &ChainId) -> String {
     HashType::ChainId.hash_to_b58check(chain_id)

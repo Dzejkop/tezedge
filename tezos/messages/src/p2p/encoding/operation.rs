@@ -128,3 +128,27 @@ has_encoding!(GetOperationsMessage, GET_OPERATION_MESSAGE_ENCODING, {
         Encoding::dynamic(Encoding::list(Encoding::Hash(HashType::OperationHash))),
     )])
 });
+
+mod parse {
+    use super::*;
+    use nom::{bytes::complete, number::Endianness, IResult};
+
+    impl Operation {
+        pub fn parse(input: &[u8]) -> IResult<&[u8], Self> {
+            let (input, len) = nom::number::complete::u32(Endianness::Big)(input)?;
+            let (rem, input) = complete::take(len)(input)?;
+
+            let (data, branch) = HashType::BlockHash.parse(input)?;
+            let data = data.into();
+
+            Ok((
+                rem,
+                Operation {
+                    branch,
+                    data,
+                    body: Default::default(),
+                },
+            ))
+        }
+    }
+}
