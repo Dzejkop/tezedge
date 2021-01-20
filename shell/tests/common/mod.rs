@@ -162,24 +162,23 @@ pub mod infra {
 
             // apply block protocol runner endpoint
             let apply_protocol_runner = common::protocol_runner_executable_path();
-            let mut apply_protocol_runner_endpoint = ProtocolRunnerEndpoint::<
-                ExecutableProtocolRunner,
-            >::try_new(
-                &format!("{}_write_runner", name),
-                ProtocolEndpointConfiguration::new(
-                    TezosRuntimeConfiguration {
-                        log_enabled: common::is_ocaml_log_enabled(),
-                        debug_mode: false,
-                    },
-                    tezos_env.clone(),
-                    false,
-                    &context_db_path,
-                    &apply_protocol_runner,
-                    log_level,
-                    true,
-                ),
-                log.clone(),
-            )?;
+            let mut apply_protocol_runner_endpoint =
+                ProtocolRunnerEndpoint::<ExecutableProtocolRunner>::try_new(
+                    &format!("{}_write_runner", name),
+                    ProtocolEndpointConfiguration::new(
+                        TezosRuntimeConfiguration {
+                            log_enabled: common::is_ocaml_log_enabled(),
+                            debug_mode: false,
+                        },
+                        tezos_env.clone(),
+                        false,
+                        &context_db_path,
+                        &apply_protocol_runner,
+                        log_level,
+                        true,
+                    ),
+                    log.clone(),
+                )?;
             let (apply_restarting_feature, apply_protocol_commands, apply_protocol_events) =
                 match apply_protocol_runner_endpoint.start_in_restarting_mode() {
                     Ok(restarting_feature) => {
