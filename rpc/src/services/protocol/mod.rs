@@ -18,7 +18,9 @@ use serde::Serialize;
 use crypto::hash::{BlockHash, ChainId, HashType, ProtocolHash};
 use storage::context::ContextApi;
 use storage::{context_key, num_from_slice, BlockHeaderWithHash, BlockStorage, BlockStorageReader};
-use tezos_api::ffi::{ProtocolRpcRequest, ProtocolRpcResponse, RpcRequest};
+use tezos_api::ffi::{
+    HelpersPreapplyBlockRequest, ProtocolRpcRequest, ProtocolRpcResponse, RpcRequest,
+};
 use tezos_messages::base::rpc_support::RpcJsonMap;
 use tezos_messages::base::signature_public_key_hash::SignaturePublicKeyHash;
 use tezos_messages::protocol::{
@@ -401,10 +403,31 @@ pub(crate) fn preapply_block(
     rpc_request: RpcRequest,
     env: &RpcServiceEnvironment,
 ) -> Result<serde_json::value::Value, failure::Error> {
-    let request =
-        create_protocol_rpc_request(chain_param, chain_id, block_hash, rpc_request, &env)?;
+    let block_storage = BlockStorage::new(env.persistent_storage());
+    let (block_header, (predecessor_block_metadata_hash, predecessor_ops_metadata_hash)) =
+        match block_storage.get_with_additional_data(&block_hash)? {
+            Some((block_header, block_header_additional_data)) => {
+                (block_header, block_header_additional_data.into())
+            }
+            None => bail!(
+                "No block header found for hash: {}",
+                HashType::BlockHash.hash_to_b58check(&block_hash)
+            ),
+        };
 
-    // TODO: TE-192 - refactor to protocol runner call
+    // create request to ffi
+    let request = HelpersPreapplyBlockRequest {
+        protocol_rpc_request: ProtocolRpcRequest {
+            chain_arg: chain_param.to_string(),
+            block_header: block_header.header.as_ref().clone(),
+            request: rpc_request,
+            chain_id,
+        },
+        predecessor_block_metadata_hash,
+        predecessor_ops_metadata_hash,
+    };
+
+    // TODO: retry?
     let response = env
         .tezos_readonly_api()
         .pool

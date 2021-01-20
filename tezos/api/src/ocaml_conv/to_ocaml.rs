@@ -9,8 +9,8 @@ use super::{
 };
 use crate::ffi::{
     ApplyBlockRequest, ApplyBlockResponse, BeginApplicationRequest, BeginConstructionRequest,
-    ForkingTestchainData, PrevalidatorWrapper, ProtocolRpcRequest, RpcMethod, RpcRequest,
-    ValidateOperationRequest,
+    ForkingTestchainData, HelpersPreapplyBlockRequest, PrevalidatorWrapper, ProtocolRpcRequest,
+    RpcMethod, RpcRequest, ValidateOperationRequest,
 };
 use crypto::hash::{
     BlockHash, BlockMetadataHash, ContextHash, Hash, OperationListListHash, OperationMetadataHash,
@@ -211,6 +211,14 @@ impl_to_ocaml_record! {
         chain_id: OCamlBytes,
         chain_arg: OCamlBytes,
         request: RpcRequest,
+    }
+}
+
+impl_to_ocaml_record! {
+    HelpersPreapplyBlockRequest {
+        protocol_rpc_request: ProtocolRpcRequest,
+        predecessor_block_metadata_hash: Option<OCamlBlockMetadataHash>,
+        predecessor_ops_metadata_hash: Option<OCamlOperationMetadataListListHash>,
     }
 }
 

@@ -1,6 +1,8 @@
 // Copyright (c) SimpleStaking and Tezedge Contributors
 // SPDX-License-Identifier: MIT
 
+//! Tests for apply first blocks for protocol V0 based
+
 use serial_test::serial;
 
 use crypto::hash::{ChainId, ProtocolHash};
@@ -96,6 +98,9 @@ fn test_bootstrap_empty_storage_with_first_three_blocks() {
         apply_block_result.context_hash
     );
     assert_eq!(1, apply_block_result.max_operations_ttl);
+    assert!(apply_block_result.block_metadata_hash.is_none());
+    assert!(apply_block_result.ops_metadata_hash.is_none());
+    assert!(apply_block_result.ops_metadata_hashes.is_none());
 
     // apply second block - level 2
     let apply_block_result = client::apply_block(ApplyBlockRequest {

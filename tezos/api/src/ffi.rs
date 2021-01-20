@@ -137,6 +137,9 @@ pub struct ApplyBlockResponse {
     pub forking_testchain_data: Option<ForkingTestchainData>,
     pub block_metadata_hash: Option<BlockMetadataHash>,
     pub ops_metadata_hashes: Option<Vec<Vec<OperationMetadataHash>>>,
+    // TODO: TE-207 - not needed, can be calculated from ops_metadata_hashes
+    /// Note: This is calculated from ops_metadata_hashes - we need this in request
+    ///       This is calculated as merkle tree hash, like operation paths
     pub ops_metadata_hash: Option<OperationMetadataListListHash>,
 }
 
@@ -659,6 +662,13 @@ pub struct RpcRequest {
     pub meth: RpcMethod,
     pub content_type: Option<String>,
     pub accept: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct HelpersPreapplyBlockRequest {
+    pub protocol_rpc_request: ProtocolRpcRequest,
+    pub predecessor_block_metadata_hash: Option<BlockMetadataHash>,
+    pub predecessor_ops_metadata_hash: Option<OperationMetadataListListHash>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]

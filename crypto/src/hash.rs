@@ -349,4 +349,49 @@ mod tests {
         );
         Ok(())
     }
+
+    #[test]
+    fn test_decode_block_metadata_hash() -> Result<(), failure::Error> {
+        let decoded = HashType::BlockMetadataHash
+            .b58check_to_hash("bm2gU1qwmoPNsXzFKydPDHWX37es6C5Z4nHyuesW8YxbkZ1339cN")?;
+        let decoded = hex::encode(&decoded);
+        let expected = "0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8";
+        assert_eq!(expected, decoded);
+
+        assert_eq!(
+            "bm2gU1qwmoPNsXzFKydPDHWX37es6C5Z4nHyuesW8YxbkZ1339cN",
+            HashType::BlockMetadataHash.hash_to_b58check(&hex::decode(decoded)?)
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_decode_operation_metadata_list_list_hash() -> Result<(), failure::Error> {
+        let decoded = HashType::OperationMetadataListListHash
+            .b58check_to_hash("LLr283rR7AWhepNeHcP9msa2VeAurWtodBLrnSjwaxpNyiyfhYcKX")?;
+        let decoded = hex::encode(&decoded);
+        let expected = "761223dee6643bb9f28acf45f2a44ae1a3e2fd68bfc1a00e3f539cc2dc637632";
+        assert_eq!(expected, decoded);
+
+        assert_eq!(
+            "LLr283rR7AWhepNeHcP9msa2VeAurWtodBLrnSjwaxpNyiyfhYcKX",
+            HashType::OperationMetadataListListHash.hash_to_b58check(&hex::decode(decoded)?)
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_decode_operation_metadata_hash() -> Result<(), failure::Error> {
+        let decoded = HashType::OperationMetadataHash
+            .b58check_to_hash("r3E9xb2QxUeG56eujC66B56CV8mpwjwfdVmEpYu3FRtuEx9tyfG")?;
+        let decoded = hex::encode(&decoded);
+        let expected = "2d905a5c4fefad1f1ab8a5436f26b15290f2fe2bea111c85ee4626156dc6b4da";
+        assert_eq!(expected, decoded);
+
+        assert_eq!(
+            "r3E9xb2QxUeG56eujC66B56CV8mpwjwfdVmEpYu3FRtuEx9tyfG",
+            HashType::OperationMetadataHash.hash_to_b58check(&hex::decode(decoded)?)
+        );
+        Ok(())
+    }
 }
